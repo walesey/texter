@@ -7,17 +7,37 @@
     <div id="main">
       <div id="content">
 	<h1>Chat Room</h1>
-	<table>
-	  <tr><td>
-	      <h3>public</h3>
-	      <input id="inputText">
-	      <textarea readonly id="messageArea" rows="10" cols="70"></textarea> 
-	    </td>
-	    <td>
-	      <h3>users</h3>
-	      <textarea readonly id="usersArea" rows="11" cols="15"></textarea> 
-	  </td></tr>
-	</table>
+	<div id="chatRooms">
+	  <table>
+	    <tr><td>
+		<h3>public</h3>
+		<input id="inputText">
+		<textarea readonly id="messageArea" rows="10" cols="70"></textarea> 
+	      </td>
+	      <td>
+		<h3>users</h3>
+		<textarea readonly id="usersArea" rows="11" cols="15"></textarea> 
+	    </td></tr>
+	    <tr><td>
+		<h3 id="roomName"></h3>
+		<input id="inputText_room">
+		<textarea readonly id="messageArea_room" rows="10" cols="70"></textarea> 
+	      </td>
+	      <td>
+		<h3>users</h3>
+		<textarea readonly id="usersArea_room" rows="11" cols="15"></textarea> 
+	    </td></tr>
+	      <tr><td>
+		  <div id="roomList"></div>
+	      </td>
+	      <td>
+		<div>
+		  <div class="button" id="makeRoom">Make Room<div>
+		</div>
+	    </td></tr>
+	  </table>
+	  
+	</div>
       </div>
     </div>
 
