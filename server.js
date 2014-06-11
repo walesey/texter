@@ -101,7 +101,7 @@ function getClientList(list){
     Object.keys(list).forEach(function (key) { 
 	names.push(list[key].name);
     })
-    return names
+    return names;
 }
 
 function getRoomList(){
@@ -109,7 +109,7 @@ function getRoomList(){
     Object.keys(rooms).forEach(function (key) { 
 	names.push(rooms[key].name);
     })
-    return names
+    return names;
 }
 
 function sendMessage( room, msg ){

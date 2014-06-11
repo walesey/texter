@@ -1,4 +1,4 @@
-var serverAddr = "10.0.9.151";
+var serverAddr = "10.0.9.130";
 var socket;
 var userName = prompt("Please enter a nickname", "Bogan");
 var activeRoom = "";
@@ -72,11 +72,13 @@ function setRoomName(name){
 
 function sendMessage(){
     var msg = $("#inputText").val();
+    $("#inputText").val("");
     socket.emit('sendMessage', { roomName: "public", message: msg });
 }
 
 function sendMessageRoom(){
-    var msg = $("#inputText_room").val();
+    var msg = $("#inputText_room").val();    
+    $("#inputText_room").val("");
     socket.emit('sendMessage', { roomName: activeRoom, message: msg });
 }
 
