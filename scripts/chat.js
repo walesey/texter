@@ -1,4 +1,4 @@
-var serverAddr = "10.1.1.4";
+var serverAddr = "10.0.9.151";
 var socket;
 var userName = prompt("Please enter a nickname", "Bogan");
 var activeRoom = "";
@@ -17,6 +17,10 @@ $('#inputText_room').bind('keypress', function(e) {
     }
 });
 
+$('#makeRoom').click(function(){
+    var roomName = $('#roomNameInput').val();
+    socket.emit('createRoom', roomName);
+});
 
 function connect(){
 
@@ -29,8 +33,8 @@ function connect(){
     socket.on('message', function(data){
 	if(data.roomName == "public")
 	    $("#messageArea").val( data.message + "\n" + $("#messageArea").val());
-	else
-	    $("#messageArea_room").val( data.message + "\n" + $("#messageArea").val());
+	else if(data.roomName == activeRoom)
+	    $("#messageArea_room").val( data.message + "\n" + $("#messageArea_room").val());
     });
 
     socket.on('userList', function(data){
@@ -43,6 +47,17 @@ function connect(){
 	$("#usersArea_room").val("");
 	for(var i=0;i<data.clients.length;i++)
 	    $("#usersArea_room").val( $("#usersArea_room").val()+"\n"+data.clients[i] );
+    });
+
+    socket.on('roomList', function(data){
+	$("#roomList").html("");
+	$("#roomList").height( data.rooms.length * 33 );
+	for(var i=0;i<data.rooms.length;i++){
+	    $("#roomList").html( "<div class=roombt>"+data.rooms[i]+"</div>" + $("#roomList").html() );
+	    $(".roombt").click(function(){
+		joinRoom($(this).html());
+	    });
+	}
     });
 
     socket.on('activeRoom', function(data){
@@ -63,4 +78,8 @@ function sendMessage(){
 function sendMessageRoom(){
     var msg = $("#inputText_room").val();
     socket.emit('sendMessage', { roomName: activeRoom, message: msg });
+}
+
+function joinRoom(name){
+    socket.emit('selectRoom', name);
 }

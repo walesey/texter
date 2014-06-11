@@ -46,7 +46,6 @@ textarea {
     text-align:center;
     margin-left:auto;
     margin-right:auto;
-    width:1900px;
 }
 
 #content{
@@ -65,8 +64,8 @@ table{
 
     padding-top:15px;
     padding-bottom:15px;
-    padding-left:150px;
-    padding-right:150px;
+    padding-left:25px;
+    padding-right:25px;
 }
 
 td{
@@ -76,6 +75,9 @@ td{
     border-style:outset;
     border-width:2px;
     background-color:#7777cc;
+
+    overflow: hidden;
+    width: 100px;
 }
 
 .button{
@@ -85,6 +87,23 @@ td{
     background-color:#ccccff;
     width:150px;
     height:30px;
+    
+    text-align:center;
+    font-family:feijoa;
+    color:#111111;
+    font-size:1.5em;
+}
+
+.roombt{
+    border-style:outset;
+    border-width:2px;
+
+    background-color:#ccccff;
+    width:400px;
+    height:30px;
+
+    margin-left:auto;
+    margin-right:auto;
     
     text-align:center;
     font-family:feijoa;
