@@ -1,4 +1,4 @@
-var serverAddr = "10.0.9.130";
+var serverAddr = "10.0.9.151";
 var socket;
 var userName = prompt("Please enter a nickname", "Bogan");
 var activeRoom = "";
@@ -35,6 +35,18 @@ function connect(){
 	    $("#messageArea").val( data.message + "\n" + $("#messageArea").val());
 	else if(data.roomName == activeRoom)
 	    $("#messageArea_room").val( data.message + "\n" + $("#messageArea_room").val());
+    });
+    
+    socket.on('chatHistory', function(data){
+	for(var i=0;i<data.chatHistory.length;i++){
+	    var chatLine = data.chatHistory[i];
+	    var text = chatLine.userName + " : " + chatLine.message;
+	    console.log(text);
+	    if(chatLine.room == "public")
+		$("#messageArea").val( text + "\n" + $("#messageArea").val());
+	    else if(chatLine.room == activeRoom)
+		$("#messageArea_room").val( text + "\n" + $("#messageArea_room").val());
+	}
     });
 
     socket.on('userList', function(data){

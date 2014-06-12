@@ -3,6 +3,17 @@ app = express(),
 server = require('http').createServer(app),
 io = require('socket.io').listen(server),
 port = 8080;
+//database
+var mysql = require("mysql");
+var database = new mysql.createConnection({
+    "hostname": "localhost",
+    "user": "joshua",
+    "password": "Flipaflop!"
+});
+startDatabase();
+
+//show last 50 messages to new users entering a room.
+var MSG_LENGTH = 50;
 
 function Client(name, socket){
     this.name = name;
@@ -36,10 +47,12 @@ io.on('connection', function (socket) {
 	clients[socket.id] = new Client(data, socket);
 	io.sockets.emit('userList', { clients: getClientList(clients) });
 	socket.emit('roomList', { rooms: getRoomList() });
+	db_sendMessages("public", socket);
     });
 
     socket.on('sendMessage', function (data) {
 	var msg = clients[socket.id].name+" : "+data.message;
+	db_addMessage(data.message, clients[socket.id].name, data.roomName);
 	if(data.roomName == "public")
 	    io.sockets.emit('message', { roomName: data.roomName, message: msg });
 	else
@@ -54,6 +67,7 @@ io.on('connection', function (socket) {
 	    sendRoomUserList(data);
 	    socket.emit('activeRoom', data);
 	    io.sockets.emit('roomList', { rooms: getRoomList() });
+	    db_sendMessages(data, socket);
 	}
     });
 
@@ -61,8 +75,9 @@ io.on('connection', function (socket) {
 	if( rooms[data] !== undefined && rooms[data].clients[socket.id] === undefined ){
 	    removeClient_Rooms(socket.id);
 	    rooms[data].clients[socket.id] = clients[socket.id];
-	    socket.emit('userListRoom', { roomname: data, clients: getClientList(rooms[data].clients) });
 	    socket.emit('activeRoom', data);
+	    socket.emit('userListRoom', { roomname: data, clients: getClientList(rooms[data].clients) });
+	    db_sendMessages(data, socket);
 	    sendRoomUserList(data);
 	}
     });
@@ -130,4 +145,31 @@ function sendRoomUserList(room){
 	    socket.emit('userListRoom', { roomname: room, clients: getClientList(rooms[room].clients) });
 	})
     }
+}
+
+function startDatabase(){
+
+    database.connect();
+
+    database.query("CREATE DATABASE IF NOT EXISTS texterDB");
+    database.query("USE texterDB");
+
+    database.query("CREATE TABLE IF NOT EXISTS messages ( id bigint unique auto_increment primary key, userName varchar(255), " +
+		   "message varchar(4096), room varchar(255) )");
+}
+
+function db_addMessage(message, userName, roomName){
+    database.query( "insert into messages(userName, message, room) values ('"+userName+"', '"+message+"', '"+roomName+"');");
+}
+
+function db_sendMessages(roomName, socket){
+    database.query( "select * from messages where room='"+roomName+"' order by id desc", function(err, rows){
+	if(err){
+	    throw err;
+	}
+	var result = [];
+	for(var i=0;(i<MSG_LENGTH) && i<rows.length; i++)
+	    result.push( rows[i] );
+	socket.emit('chatHistory', { room: roomName, chatHistory: result });
+    });
 }
