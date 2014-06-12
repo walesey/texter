@@ -164,13 +164,10 @@ function db_addMessage(msg, user, roomName){
 }
 
 function db_sendMessages(roomName, socket){
-    database.query( "select * from messages where room = ? order by id desc", roomName, function(err, rows){
+    database.query( "select * from messages where room=? order by id desc limit "+MSG_LENGTH, [roomName], function(err, rows){
 	if(err){
 	    throw err;
 	}
-	var result = [];
-	for(var i=0;(i<MSG_LENGTH) && i<rows.length; i++)
-	    result.push( rows[i] );
-	socket.emit('chatHistory', { room: roomName, chatHistory: result });
+	socket.emit('chatHistory', { room: roomName, chatHistory: rows });
     });
 }

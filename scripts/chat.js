@@ -38,6 +38,7 @@ function connect(){
     });
     
     socket.on('chatHistory', function(data){
+	$("#messageArea_room").val("");
 	for(var i=0;i<data.chatHistory.length;i++){
 	    var chatLine = data.chatHistory[i];
 	    var text = chatLine.userName + " : " + chatLine.message;
