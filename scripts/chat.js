@@ -41,11 +41,10 @@ function connect(){
 	for(var i=0;i<data.chatHistory.length;i++){
 	    var chatLine = data.chatHistory[i];
 	    var text = chatLine.userName + " : " + chatLine.message;
-	    console.log(text);
 	    if(chatLine.room == "public")
-		$("#messageArea").val( text + "\n" + $("#messageArea").val());
+		$("#messageArea").val( $("#messageArea").val() + "\n" + text);
 	    else if(chatLine.room == activeRoom)
-		$("#messageArea_room").val( text + "\n" + $("#messageArea_room").val());
+		$("#messageArea_room").val( $("#messageArea_room").val() + "\n" + text );
 	}
     });
 

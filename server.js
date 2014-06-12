@@ -158,12 +158,13 @@ function startDatabase(){
 		   "message varchar(4096), room varchar(255) )");
 }
 
-function db_addMessage(message, userName, roomName){
-    database.query( "insert into messages(userName, message, room) values ('"+userName+"', '"+message+"', '"+roomName+"');");
+function db_addMessage(msg, user, roomName){
+    var newMessage = [user, msg, roomName];
+    database.query( "insert into messages(userName, message, room) values( ? , ? , ? );", newMessage);
 }
 
 function db_sendMessages(roomName, socket){
-    database.query( "select * from messages where room='"+roomName+"' order by id desc", function(err, rows){
+    database.query( "select * from messages where room = ? order by id desc", roomName, function(err, rows){
 	if(err){
 	    throw err;
 	}
