@@ -1,4 +1,4 @@
-var serverAddr = "10.0.9.151";
+var serverAddr = "127.0.0.1";
 var socket;
 var userName = prompt("Please enter a nickname", "Bogan");
 var activeRoom = "";
@@ -32,9 +32,10 @@ function connect(){
 
     socket.on('message', function(data){
 	if(data.roomName == "public")
-	    $("#messageArea").val( data.message + "\n" + $("#messageArea").val());
+	    $("#messageArea").val( $("#messageArea").val() + "\n" + data.message );
 	else if(data.roomName == activeRoom)
-	    $("#messageArea_room").val( data.message + "\n" + $("#messageArea_room").val());
+	    $("#messageArea_room").val( $("#messageArea_room").val() + "\n" + data.message );
+	scroll();
     });
     
     socket.on('chatHistory', function(data){
@@ -43,10 +44,11 @@ function connect(){
 	    var chatLine = data.chatHistory[i];
 	    var text = chatLine.userName + " : " + chatLine.message;
 	    if(chatLine.room == "public")
-		$("#messageArea").val( $("#messageArea").val() + "\n" + text);
+		$("#messageArea").val( text + "\n" + $("#messageArea").val());
 	    else if(chatLine.room == activeRoom)
-		$("#messageArea_room").val( $("#messageArea_room").val() + "\n" + text );
+		$("#messageArea_room").val( text + "\n" + $("#messageArea_room").val() );
 	}
+	scroll();
     });
 
     socket.on('userList', function(data){
@@ -96,4 +98,12 @@ function sendMessageRoom(){
 
 function joinRoom(name){
     socket.emit('selectRoom', name);
+}
+
+//make text areas scroll to bottom
+function scroll(){
+    var textarea1 = document.getElementById('messageArea');
+    textarea1.scrollTop = textarea1.scrollHeight;
+    var textarea2 = document.getElementById('messageArea_room');
+    textarea2.scrollTop = textarea2.scrollHeight;
 }
